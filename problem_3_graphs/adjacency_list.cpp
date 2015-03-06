@@ -138,6 +138,9 @@ int Graph::minCut(){
     randEdgeContract();
     //cout << graph.numVertices();
   }
+  count = adj_list.begin()->second.size();
+  return count;
+
   for (map< int, multimap<int, int> >::iterator it = adj_list.begin(); it !=adj_list.end(); it++) {
     for (multimap <int,int>::iterator mm_it = it->second.begin(); mm_it != it->second.end(); mm_it++){
       count++;

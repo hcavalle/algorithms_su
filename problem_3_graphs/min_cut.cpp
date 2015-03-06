@@ -21,7 +21,7 @@
 
 int main (int argc, char *argv[]) {
   //instantiate adjacency list graph
-  Graph graph(201);
+  Graph graph(200);
   int cut = 0;
   int min_cut;
   int max = 10;
@@ -42,7 +42,11 @@ int main (int argc, char *argv[]) {
       
       graph.readEdgesFromFile(filename.c_str());
       cut = graph.minCut();
-      min_cut = min_cut < cut ? min_cut : cut;
+      if (cut < min_cut) {
+        min_cut = cut;
+        cout<<"new mincut found: "<<min_cut<<endl;
+      }
+        //min_cut = min_cut < cut ? min_cut : cut;
     }
       cout<<"min cut is: "<<min_cut<<endl;;
   }  
