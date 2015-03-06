@@ -19,8 +19,8 @@
 #include "graph.h"
 
 Graph::Graph() {
-  n = 0;
-  m = 0;
+  _n = 0;
+  _m = 0;
 }
 
 void Graph::reverse() {
@@ -31,7 +31,6 @@ void Graph::reverse() {
     rev_edges.insert(std::make_pair(it->second, it->first));
     //edges.erase(it);
   } 
-  edges = rev_edges;
 }
 
 void Graph::print() {
@@ -49,7 +48,7 @@ void Graph::clear() {
 
 void Graph::addEdge(Edge e) {
   edges.insert(make_pair(e.v, e.vv));
-  m++;
+  _m++;
 }
 
 void Graph::addVertex (int v) {
@@ -59,8 +58,8 @@ void Graph::addVertex (int v) {
   }
 
   Vertex vertex(v);
-  vertices.insert(std::pair<int, pair<int,bool> > (vertex.index, vertex.properties ));
-  n++;
+  vertices.insert(std::make_pair(vertex.index, vertex));
+  _n++;
 }
 
 void Graph::addVertex (Vertex v) {
@@ -68,18 +67,42 @@ void Graph::addVertex (Vertex v) {
     return;
   }
 
-  vertices.insert(std::pair<int, pair<int,bool> > (v.index, v.properties ));
-  n++;
+  vertices.insert(std::make_pair(v.index, v));
+  _n++;
 }
 
-void Graph::set_n(int _n) {
-  n = _n;
+bool Graph::vertexExplored(int i) {
+  return vertices[i].explored;
 }
 
-
-void Graph::set_m(int _m) {
-  m = _m;
+void Graph::setVertexExplored(int i) {
+  vertices[i].explored =  vertices[i].explored ? false : true; 
 }
+
+void Graph::vertexLeader(int i, int leader) {
+  vertices[i].leader = leader;
+}
+
+void Graph::setFinish(int i, int time) {
+  vertices[i].finish_time = time;
+}
+
+void Graph::n(int n) {
+  _n = n;
+}
+
+void Graph::m(int m) {
+  _m = m;
+}
+
+int Graph::n() {
+  return _n;
+}
+
+int Graph::m() {
+  return _m;
+}
+
 /* /
 void Graph::m++() {
   m++;

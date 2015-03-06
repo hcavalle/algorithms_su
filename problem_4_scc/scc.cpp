@@ -47,42 +47,86 @@
 //      
 //dfs implementation
 
-#include "graph.h"
-#include <iostream>
-#include <fstream>
+#include "scc.h"
 
-using namespace std;
+SccComputer::SccComputer(Graph g) {
+  cur_leader = g.n();
+  cur_finish_time = 0;
+}
 
-void dfsLoop(Graph g) {
-  //Graph grev = g.reverse();
+void SccComputer::dfs(Graph g, int node) {
+  //mark as explored
+  g.vertices[node].setExplored();
+  
+  //set leader
+  g.vertices[node].setLeader(cur_leader);
 
-  //loop 1
+  //check each arc recursively
+  pair<iterator, iterator> arc_range = g.edges.equal_range(node);
+  for (map<int,int>::iterator it = arc_range.begin(); it != arc_range.end(); it++){
+    int tail = it->second;
+    if ( !g.vertices[tail].vertexExplored() ) {
+      dfs(g, tail);
+    }
+  } 
+  cur_finish_time++;
+  g.setFinish(node, cur_finish_time);
+  
+}
+
+void SccComputer::dfsLoop(Graph g) {
+  //loop 
+  cur_leader = g.n;
+  cur_finish_time = 0;
+
+  for (int i = cur_leader; i > 0; i--) {
+    if (  !g.vertices[i].vertexExplored() ) {
+      cur_leader = i;
+      dfs(g,i);
+    }
+      
+  }
+  //loop 2
+    //with f_times
+}
+
+void SccComputer::setMagicNumbers(Graph g) {
+  //dfsLoop1
+}
+
+void SccComputer::setSccs(Graph g) {
+
+}
+
+void SccComputer::compute(Graph g) {
+  Graph reverse(g);
+
+  setMagicNumbers(g);
+  setSccs(g);
 }
 
 int main(int argc, char **argv) {
- Graph graph;
- string filename;
- //read in from file
- while (true) {
-   cout<<"filename plase: "<<endl;
-   cin>>filename;
+  Graph graph;
+  //read in from file
+  string filename;
 
+  while (true) { 
+    cout<<"filename plase: "<<endl; 
+    cin>>filename; 
+    graph.readFromFile(filename.c_str()); 
+    cout<<"done reading file"<<endl;
 
-   //call mincut as specified for rand contraction algorithm
+    SccComputer computer(graph);
 
-   graph.readFromFile(filename.c_str());
-   cout<<"done reading from file"<<endl;
-   Graph reverse(graph);
-   reverse.reverse();
-   cout<<"done reversing graph";
- }
-                                                                                                
+    cout<<"Computing scc process beginning..."<<endl;
+    computer.compute(graph);
+  } 
+
  //reverse
  //dfsLoop
   //loop 1: calc finishing times
   //loop 2: assign leaders and find SCCs
  
  return 0;
-  
 }
 

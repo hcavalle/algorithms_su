@@ -38,17 +38,17 @@ struct Edge {
 
 struct Vertex {
   Vertex(int v) : index(v),explored(0),finish_time(0),leader(0){}
+  Vertex(){}
   int index;
   bool explored;
   int finish_time;  
   int leader;
-  std::pair <bool, int> properties;
 };
 
 class Graph {
   private:
-    int n;
-    int m;
+    int _n;
+    int _m;
 
   public:
     Graph();
@@ -57,10 +57,18 @@ class Graph {
     void findEdge();
     void addEdge(Edge e);
     void addEdge(int v, int vv);
+
     void addVertex(Vertex v);
     void addVertex(int v);
-    void set_n(int _n);
-    void set_m(int _m);
+    bool vertexExplored(int index);
+    void setVertexExplored(int index);
+    void vertexLeader(int i, int leader);
+    void setFinish(int time);
+
+    void n(int n);
+    void m(int n);
+    int n();
+    int m();
     /*  void n++();
     void m++(); */
     void readFromFile(const char file[]);
@@ -68,8 +76,10 @@ class Graph {
     void print();
     void clear();
 
-    map<int, pair<bool, int> > vertices;
+    map<int, Vertex > vertices;
     multimap<int, int> edges;
+    multimap<int, int> rev_edges;
 };
+
 
 #endif
