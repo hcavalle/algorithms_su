@@ -56,20 +56,21 @@ SccComputer::SccComputer(Graph g) {
 
 void SccComputer::dfs(Graph g, int node) {
   //mark as explored
-  g.vertices[node].setExplored();
+  g.setVertexExplored(node);
   
   //set leader
-  g.vertices[node].setLeader(cur_leader);
+  g.vertexLeader(node, cur_leader);
 
   //check each arc recursively
-  pair<iterator, iterator> arc_range = g.edges.equal_range(node);
-  for (map<int,int>::iterator it = arc_range.begin(); it != arc_range.end(); it++){
+  pair<map<int,int>::iterator, map<int,int>::iterator> arc_range = g.edges.equal_range(node);
+  for (map<int,int>::iterator it = arc_range.first; it != arc_range.second; it++){
     int tail = it->second;
-    if ( !g.vertices[tail].vertexExplored() ) {
+    if ( !g.vertexExplored(tail) ) {
       dfs(g, tail);
     }
   } 
   cur_finish_time++;
+  //use pass by value accessor
   g.setFinish(node, cur_finish_time);
   
 }
