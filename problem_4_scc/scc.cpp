@@ -50,8 +50,32 @@
 #include "scc.h"
 
 SccComputer::SccComputer(Graph g) {
-  cur_leader = g.n();
-  cur_finish_time = 0;
+  this->leader(g.n());
+  this->finish_time(0);
+}
+
+int SccComputer::leader() {
+  return _cur_leader;
+
+}
+
+void SccComputer::leader(int l) {
+  this->_cur_leader = l;
+
+}
+
+int SccComputer::finish_time() {
+  return _cur_finish_time;
+
+}
+
+void SccComputer::finish_time(int ft) {
+  this->_cur_finish_time = ft;
+
+}
+
+void SccComputer::increment_finish_time(){
+  _cur_finish_time++;
 }
 
 void SccComputer::dfs(Graph g, int node) {
@@ -59,7 +83,7 @@ void SccComputer::dfs(Graph g, int node) {
   g.setVertexExplored(node);
   
   //set leader
-  g.vertexLeader(node, cur_leader);
+  g.vertexLeader(node, this->leader());
 
   //check each arc recursively
   pair<map<int,int>::iterator, map<int,int>::iterator> arc_range = g.edges.equal_range(node);
@@ -69,21 +93,22 @@ void SccComputer::dfs(Graph g, int node) {
       dfs(g, tail);
     }
   } 
-  cur_finish_time++;
+  //_cur_finish_time++;
+  this->increment_finish_time();
+  
   //use pass by value accessor
-  g.setFinish(node, cur_finish_time);
+  g.setFinish(node, this->finish_time());
   
 }
 
 void SccComputer::dfsLoop(Graph g) {
   //loop 
-  cur_leader = g.n;
-  cur_finish_time = 0;
+  this->finish_time(0);
 
-  for (int i = cur_leader; i > 0; i--) {
-    if (  !g.vertices[i].vertexExplored() ) {
-      cur_leader = i;
-      dfs(g,i);
+  for (map<int, Vertex>::reverse_iterator it = g.vertices.rbegin(); it != g.vertices.rend(); it++) {
+    if (  !g.vertexExplored(it->first) ) {
+      this->leader(it->first);
+      dfs(g,it->first);
     }
       
   }
@@ -91,19 +116,33 @@ void SccComputer::dfsLoop(Graph g) {
     //with f_times
 }
 
-void SccComputer::setMagicNumbers(Graph g) {
+
+void SccComputer::setMagicNumbers(Graph g_rev) {
   //dfsLoop1
+  g_rev.reverse();
+  dfsLoop(g_rev);
+  g_rev.nodesToFinishTimes();
 }
 
-void SccComputer::setSccs(Graph g) {
+void SccComputer::setSccs(Graph g_rev) {
+  //leader now demarcates sccs
+  dfsLoop(g_rev); 
+}
+
+void SccComputer::getSccs(Graph g){
+  //iterate over all vertices inserting and incrementing a leader map within scc
+
+}
+
+void SccComputer::printSccs() {
 
 }
 
 void SccComputer::compute(Graph g) {
-  Graph reverse(g);
-
-  setMagicNumbers(g);
-  setSccs(g);
+  Graph g_rev(g);
+  setMagicNumbers(g_rev);
+  setSccs(g_rev);
+  printSccs();
 }
 
 int main(int argc, char **argv) {
@@ -112,7 +151,7 @@ int main(int argc, char **argv) {
   string filename;
 
   while (true) { 
-    cout<<"filename plase: "<<endl; 
+    cout<<"filename please: "<<endl; 
     cin>>filename; 
     graph.readFromFile(filename.c_str()); 
     cout<<"done reading file"<<endl;

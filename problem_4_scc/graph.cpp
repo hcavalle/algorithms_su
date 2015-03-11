@@ -18,9 +18,11 @@
 
 #include "graph.h"
 
-Graph::Graph() {
-  _n = 0;
-  _m = 0;
+Graph::Graph(){}
+
+Graph::Graph(int n=0, int m=0) {
+  _n = n;
+  _m = m;
 }
 
 void Graph::reverse() {
@@ -85,6 +87,12 @@ void Graph::vertexLeader(int i, int leader) {
 
 void Graph::setFinish(int i, int time) {
   vertices[i].finish_time = time;
+  finish_times.insert(make_pair(time,vertices[i]));
+  finish_times_queue.push(time);
+}
+
+void Graph::nodesToFinishTimes() {
+  vertices = finish_times;
 }
 
 void Graph::n(int n) {
@@ -101,6 +109,15 @@ int Graph::n() {
 
 int Graph::m() {
   return _m;
+}
+
+int Graph::max() {
+  if (finish_times_queue.empty())
+    return this->n();
+
+  int top = finish_times_queue.top();
+  finish_times_queue.pop();
+  return top;
 }
 
 /* /

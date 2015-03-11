@@ -29,14 +29,24 @@ class SccComputer {
   private:
 
   public:
-    int cur_leader;
-    int cur_finish_time;
+    int _cur_leader;
+    int _cur_finish_time;
     vector<int> scc_vector;
+    vector<int> magic_numbers;
 
     SccComputer(Graph g);
     SccComputer();
+    int leader();
+    void leader(int l);
+    int finish_time();
+    void finish_time(int ft);
+    void increment_finish_time();
+
     void setMagicNumbers(Graph g);
     void setSccs(Graph g);
+    void getSccs(Graph g);
+    void printSccs();
+
     void dfsLoop(Graph g);
     void dfs(Graph g, int node);
     void printTop5();

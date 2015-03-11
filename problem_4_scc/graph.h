@@ -22,6 +22,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <queue>
 #include <algorithm>
 #include <string>
 #include <sstream>
@@ -52,6 +53,7 @@ class Graph {
 
   public:
     Graph();
+    Graph(int n, int m);
     void reverse();
     void findVertice();
     void findEdge();
@@ -63,12 +65,14 @@ class Graph {
     bool vertexExplored(int index);
     void setVertexExplored(int index);
     void vertexLeader(int i, int leader);
-    void setFinish(int time);
+    void setFinish(int node, int time);
+    void nodesToFinishTimes();
 
     void n(int n);
     void m(int n);
     int n();
     int m();
+    int max();
     /*  void n++();
     void m++(); */
     void readFromFile(const char file[]);
@@ -76,9 +80,12 @@ class Graph {
     void print();
     void clear();
 
-    map<int, Vertex > vertices;
+    map<int, Vertex> vertices;
     multimap<int, int> edges;
     multimap<int, int> rev_edges;
+    map<int, Vertex> finish_times;
+    priority_queue<int> finish_times_queue;
+    map<int, int> leaders;
 };
 
 
