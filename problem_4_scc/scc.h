@@ -31,8 +31,10 @@ class SccComputer {
   public:
     int _cur_leader;
     int _cur_finish_time;
-    vector<int> scc_vector;
+    map<int, int> scc_map;
     vector<int> magic_numbers;
+    Graph graph;
+    Graph g_rev;
 
     SccComputer(Graph g);
     SccComputer();
@@ -42,15 +44,15 @@ class SccComputer {
     void finish_time(int ft);
     void increment_finish_time();
 
-    void setMagicNumbers(Graph g);
-    void setSccs(Graph g);
-    void getSccs(Graph g);
-    void printSccs();
+    void setMagicNumbers(Graph& g);
+    void setSccs(Graph& g);
+    void getSccs(Graph& g);
+    void printSccs(Graph& g);
 
-    void dfsLoop(Graph g);
-    void dfs(Graph g, int node);
+    void dfsLoop(Graph& g);
+    void dfs(Graph& g, int node);
     void printTop5();
-    void compute(Graph g);
+    void compute(Graph& g);
 };
 
 #endif

@@ -18,7 +18,11 @@
 
 #include "graph.h"
 
-Graph::Graph(){}
+Graph::Graph(){
+  _n=0;
+  _m=0;
+}
+
 
 Graph::Graph(int n=0, int m=0) {
   _n = n;
@@ -91,8 +95,8 @@ void Graph::setFinish(int i, int time) {
   finish_times_queue.push(time);
 }
 
-void Graph::nodesToFinishTimes() {
-  vertices = finish_times;
+void Graph::nodesToFinishTimes(map<int, Vertex> ft) {
+  vertices = ft;
 }
 
 void Graph::n(int n) {

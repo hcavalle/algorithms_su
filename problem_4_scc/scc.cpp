@@ -50,8 +50,13 @@
 #include "scc.h"
 
 SccComputer::SccComputer(Graph g) {
+  this->graph = g;
+  this->g_rev = g;
   this->leader(g.n());
   this->finish_time(0);
+}
+
+SccComputer::SccComputer() {
 }
 
 int SccComputer::leader() {
@@ -78,7 +83,7 @@ void SccComputer::increment_finish_time(){
   _cur_finish_time++;
 }
 
-void SccComputer::dfs(Graph g, int node) {
+void SccComputer::dfs(Graph& g, int node) {
   //mark as explored
   g.setVertexExplored(node);
   
@@ -90,7 +95,7 @@ void SccComputer::dfs(Graph g, int node) {
   for (map<int,int>::iterator it = arc_range.first; it != arc_range.second; it++){
     int tail = it->second;
     if ( !g.vertexExplored(tail) ) {
-      dfs(g, tail);
+      dfs(g,tail);
     }
   } 
   //_cur_finish_time++;
@@ -101,7 +106,7 @@ void SccComputer::dfs(Graph g, int node) {
   
 }
 
-void SccComputer::dfsLoop(Graph g) {
+void SccComputer::dfsLoop(Graph& g) {
   //loop 
   this->finish_time(0);
 
@@ -112,37 +117,55 @@ void SccComputer::dfsLoop(Graph g) {
     }
       
   }
-  //loop 2
-    //with f_times
 }
 
+/*void SccComputer::dfsLoopByFinish() {
+  //iterate over g_rev finish_times
+  //for each finish time call dfs on the main graph entry, leaders will be sccs
+  for (map<int,int>::reverse_iterator it = this->g_rev.finish_times.rbegin(); it != this->g_rev.finish_times.rend(); it++) {
+    if (!this->graph.vertexExplored(it->second)) {
+      this->leader(it->second);
+      dfs(this->graph, it->second);
+    }
+  }
+}*/
 
-void SccComputer::setMagicNumbers(Graph g_rev) {
+void SccComputer::setMagicNumbers(Graph& g_rev) {
   //dfsLoop1
   g_rev.reverse();
   dfsLoop(g_rev);
-  g_rev.nodesToFinishTimes();
+  this->graph.nodesToFinishTimes(g_rev.finish_times);
 }
 
-void SccComputer::setSccs(Graph g_rev) {
+void SccComputer::setSccs(Graph& g) {
   //leader now demarcates sccs
-  dfsLoop(g_rev); 
+  dfsLoop(g);
+  std::pair<map<int, int>::iterator, bool> ret;
+  for (map<int, Vertex>::iterator it=g.vertices.begin(); it != g.vertices.end(); it++) {
+    ret = this->scc_map.insert(make_pair(it->second.leader, 1));
+    if (!ret.second) {
+      scc_map[it->second.leader]++;
+    }
+  }
 }
 
-void SccComputer::getSccs(Graph g){
+void SccComputer::getSccs(Graph& g){
   //iterate over all vertices inserting and incrementing a leader map within scc
 
 }
 
-void SccComputer::printSccs() {
+void SccComputer::printSccs(Graph& g) {
+  cout<<"scc count:"<<endl;
+  for (map<int,int>::iterator it = this->scc_map.begin(); it != scc_map.end(); it++) {
+    cout<<it->second<<",";
+  }
 
 }
 
-void SccComputer::compute(Graph g) {
-  Graph g_rev(g);
-  setMagicNumbers(g_rev);
-  setSccs(g_rev);
-  printSccs();
+void SccComputer::compute(Graph& g) {
+  setMagicNumbers(this->g_rev);
+  setSccs(this->graph);
+  printSccs(this->g_rev);
 }
 
 int main(int argc, char **argv) {

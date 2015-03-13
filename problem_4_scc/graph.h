@@ -66,7 +66,7 @@ class Graph {
     void setVertexExplored(int index);
     void vertexLeader(int i, int leader);
     void setFinish(int node, int time);
-    void nodesToFinishTimes();
+    void nodesToFinishTimes(map<int, Vertex> ft);
 
     void n(int n);
     void m(int n);
